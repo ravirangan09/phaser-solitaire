@@ -1,0 +1,19 @@
+{
+  "name": "phaser",
+  "version": "1.0.0",
+  "description": "Phaser game",
+  "source": "src/index.html",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "phaser": "^3.55.2"
+  },
+  "devDependencies": {
+    "@parcel/resolver-glob": "^2.0.1",
+    "eslint": "^8.6.0",
+    "parcel": "^2.0.1"
+  }
+}
