@@ -1,4 +1,4 @@
-const TWEEN_DURATION = 100;
+const TWEEN_DURATION = 50;
 const CARD_SCALE = 0.4;
 
 export default class Card {
@@ -45,12 +45,11 @@ export default class Card {
   show(open) {
     if(open && !this.open) {
       this.image.setTexture(this.openTextureKey);
-      this.image.setInteractive();
       this.scene.input.setDraggable(this.image);
     }
     if(!open && this.open) {
       this.image.setTexture(this.closeTextureKey);
-      this.image.disableInteractive();
+      this.scene.input.setDraggable(this.image, false)
     }
     this.open = open;
     this.scene.children.bringToTop(this.image)
