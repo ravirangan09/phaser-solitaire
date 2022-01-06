@@ -6,6 +6,7 @@ const config = {
 	type: AUTO,
 	width: '100%',
 	height: '100%',
+	parent: 'game',
 	backgroundColor: 0x008000,
 	physics: {
 		default: 'arcade',

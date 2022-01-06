@@ -100,6 +100,10 @@ export default class SolitaireGame extends Scene
     return this.hasMatch(card, topKey == card.key);
   }
 
+  canMoveFoundationCard(card) {
+    return this.hasMatchColumn(card, true);
+  }
+
   canMovePlayCard(card) {
     const topKey = this.playSection[card.column].stack.at(-1)?.key;
     if(topKey != card.key) return false; //not top
@@ -115,13 +119,25 @@ export default class SolitaireGame extends Scene
   }
 
   hasMatch(card, isTopCard=true) {
+    let result = this.hasMatchFoundation(card, isTopCard);
+    if(!result) {
+      result = this.hasMatchColumn(card, isTopCard);
+    }
+    return result;
+  }
+
+  hasMatchFoundation(card, isTopCard=true) {
     for(let fcIndex=0;isTopCard && fcIndex<4;fcIndex++) {
       if(this.foundationSection[fcIndex].ruleValue == card.value && 
           this.foundationSection[fcIndex].ruleSuites.includes(card.suite)) {
         return { targetSection: 'foundation', targetColumn: fcIndex };
       }
     }
-    for(let colIndex=0;colIndex<7;colIndex++) {
+    return false;
+  }
+
+  hasMatchColumn(card, isTopCard=true) {
+     for(let colIndex=0;colIndex<7;colIndex++) {
       if(this.columnSection[colIndex].ruleValue == card.value && 
         this.columnSection[colIndex].ruleSuites.includes(card.suite)) {
         return { targetSection: isTopCard ? 'column': 'columnmultiple', targetColumn: colIndex };
@@ -132,6 +148,8 @@ export default class SolitaireGame extends Scene
 
   canMoveCard(card) {
     switch(card.section) {
+    case "foundation":
+      return this.canMoveFoundationCard(card);
     case "column":
       return this.canMoveColumnCard(card);
     case "draw":
@@ -189,6 +207,19 @@ export default class SolitaireGame extends Scene
     if(this.columnSection[sourceColumn].stack.length) {
       this.columnSection[sourceColumn].stack.at(-1).show(true);
     }
+  }
+
+  moveFoundationToColumn(card, targetColumn) {
+    const sourceColumn = card.column;
+    let { x, y } = this.columnSection[targetColumn].pos;
+    y += this.columnSection[targetColumn].stack.length * VSHIFT;
+    card.moveTo(x, y, card.open);
+
+    this.foundationSection[sourceColumn].stack.pop();
+    this.columnSection[targetColumn].stack.push(card)
+    this.setColumnRule(targetColumn)
+    this.setFoundationRule(sourceColumn);
+    card.setLocation('column', targetColumn);
   }
 
   movePlayToFoundation(card, targetColumn) {
@@ -304,6 +335,9 @@ export default class SolitaireGame extends Scene
     switch(operation) {
     case "column2foundation":
       this.moveColumnToFoundation(card, targetColumn);
+      break;
+    case "foundation2column":
+      this.moveFoundationToColumn(card, targetColumn);
       break;
     case "column2column":
       this.moveColumnToColumn(card, targetColumn);
