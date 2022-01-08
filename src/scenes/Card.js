@@ -21,6 +21,7 @@ export default class Card {
     this.open = false;
     this.openTextureKey = this.key; 
     this.closeTextureKey = 'BACK';
+    this.setLocation('none', 0)
   }
 
   get width() {
@@ -31,10 +32,11 @@ export default class Card {
     return this.image.displayHeight;
   }
 
-  setPos(x, y, open) {
+  setPosition(x, y, open) {
     this.open = open;
     this.image.setPosition(x,y).setVisible(true)
       .setTexture(open ? this.openTextureKey : this.closeTextureKey);
+    this.scene.input.setDraggable(this.image, open)
   }
 
   setLocation(section, column) {
