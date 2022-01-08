@@ -12,14 +12,14 @@ const DRAW_COUNT = 3;
 
 export default class SolitaireGame extends Scene
 {
-	constructor()
-	{
-		super('solitaire-game')
+  constructor()
+  {
+    super('solitaire-game')
     this.moves = [];
     this.sections = {};
-	}
+  }
 
-	preload()
+  preload()
   {
     for(const key in cardImages) {
       this.load.svg(key, cardImages[key])   
