@@ -11,6 +11,8 @@ The standard `yarn install` for nodejs
 
 Uses `parcel` builder
 
+![Screenshot](./images/screenshot.jpg?raw=true "Screenshot")
+
 ## Features
 * Unlimited undo
 * new game
