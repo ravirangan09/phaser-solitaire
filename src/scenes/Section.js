@@ -51,4 +51,46 @@ export default class Section {
     return this.data[column].stack.at(-1);
   }
 
+  async doClick(card, sections) {
+    const { targetSection=null, targetColumn=0, multiple=false } = this.canMove(card, sections)
+    if(targetSection) {
+      if(multiple) {
+        await this.moveMultiple(card, targetColumn);
+      }
+      else {
+        const sourceColumn = card.column;
+         this.remove(sourceColumn);
+        await targetSection.add(card, targetColumn, card.open);
+        this.add2UndoMove({ sourceSection: this, 
+                            sourceColumn, 
+                            targetSection, 
+                            targetColumn, 
+                            key: card.key, 
+                            sourceOpen: true, 
+                            targetOpen: true 
+                          });
+      }
+    }
+  }
+
+  getCard(column, key) {
+    const cardIndex = this.data[column].stack.findIndex(c=>c.key == key);
+    const card = this.data[column].stack[cardIndex];
+    return { card, cardIndex };
+  }
+
+  add2UndoMove(data) {
+    this.scene.events.emit("undomove", { action: 'move', data });
+  }
+
+  add2UndoClose(card) {
+    this.scene.events.emit("undomove", { action: 'close', 
+                                          data: { targetSection: card.section, 
+                                                  targetColumn: card.column, 
+                                                  key: card.key 
+                                                } 
+                                        }
+                          );
+  }
+
 }

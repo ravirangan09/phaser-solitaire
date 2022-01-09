@@ -11,7 +11,12 @@ The standard `yarn install` for nodejs
 
 Uses `parcel` builder
 
+## Features
+* Unlimited undo
+* new game
+* Page refresh starts same game from beginning
+
 ## Pending
 * Drag and drop. Currently click works
-* Undo and redo 
+
 

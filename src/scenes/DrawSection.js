@@ -28,6 +28,15 @@ export default class DrawSection extends Section {
       if(!card) break;
       playSection.remove(0)
       await this.add(card, 0, false)
+      this.add2UndoMove({ sourceSection: playSection, 
+                          sourceColumn: 0, 
+                          targetSection: this , 
+                          targetColumn: 0, 
+                          key: card.key, 
+                          sourceOpen: true, 
+                          targetOpen: false 
+                        });
+
     }
   }
   
@@ -42,6 +51,15 @@ export default class DrawSection extends Section {
       for(let i=0;i<this.drawCount;i++) {
         const moveCard = this.remove(card.column);
         await targetSection.add(moveCard, targetColumn, true);
+        this.add2UndoMove({ sourceSection: this, 
+                            sourceColumn: 0, 
+                            targetSection, 
+                            targetColumn, 
+                            key: moveCard.key, 
+                            sourceOpen: false, 
+                            targetOpen: true 
+                          });
+
       }
     }
   }

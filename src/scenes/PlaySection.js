@@ -38,13 +38,6 @@ export default class PlaySection extends Section {
     }
   }
 
-  doClick(card, sections) {
-    const { targetSection=null, targetColumn=0 } = this.canMove(card, sections)
-    if(targetSection) {
-      this.remove(card.column);
-      targetSection.add(card, targetColumn, card.open)
-    }
-  }
 
   async add(card, column, open, isInit=false) {
     await super.add(card, column, open, isInit);
@@ -53,8 +46,8 @@ export default class PlaySection extends Section {
     }
   }
 
-  remove(column) {
-    const card = super.remove(column);
+  remove(column, pos=-1) {
+    const card = super.remove(column, pos);
     if(this.drawCount == 3) {
       this.showThree();
     }

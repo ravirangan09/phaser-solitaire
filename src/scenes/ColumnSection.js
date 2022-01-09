@@ -54,19 +54,18 @@ export default class ColumnSection extends Section {
     return false;
   }
 
-  remove(column, pos=-1) {
-    const card = super.remove(column, pos);
-    const topCard = this.getTopCard(column);
-    if(topCard) topCard.show(true);
-    return card;
-  }
 
   canMove(card, sections) {
     if(!card.open) return false;
     const topCard = this.getTopCard(card.column);
-    let result = sections.foundation.hasMatch(card);
-    if(!result)
-      result = this.hasMatch(card, topCard.key == card.key)
+    const isTop = topCard.key == card.key;
+    let result=false;
+    if(isTop) {
+      result = sections.foundation.hasMatch(card);
+    }
+    if(!result) {
+      result = this.hasMatch(card, isTop);
+    }
     return result;
   }
 
@@ -75,22 +74,29 @@ export default class ColumnSection extends Section {
     const stack = this.data[sourceColumn].stack;
     const cardIndex = stack.findIndex(c=>c.key == card.key)
     const moveCardCount = stack.length - cardIndex;
+    const moveData = [];
     for(let i=0;i<moveCardCount;i++) {
       const sourceCard = this.remove(sourceColumn, cardIndex);
       await this.add(sourceCard, targetColumn, sourceCard.open);
+      moveData.unshift({ sourceSection: this, 
+                          sourceColumn, 
+                          targetSection: this, 
+                          targetColumn, 
+                          sourceOpen: true,  
+                          targetOpen: true, 
+                          key: sourceCard.key 
+                        })
     }
+    moveData.forEach(m=>this.add2UndoMove(m));  //switch order
   }
 
-  doClick(card, sections) {
-    const { targetSection=null, targetColumn=0, multiple=false } = this.canMove(card, sections)
-    if(targetSection) {
-      if(multiple) {
-        this.moveMultiple(card, targetColumn);
-      }
-      else {
-        this.remove(card.column);
-        targetSection.add(card, targetColumn, card.open);
-      }
+  async doClick(card, sections) {
+    const sourceColumn = card.column;
+    await super.doClick(card, sections);
+    const topCard = this.getTopCard(sourceColumn);
+    if(topCard && !topCard.open) {
+      topCard.show(true);
+      this.add2UndoClose(topCard)
     }
   }
 

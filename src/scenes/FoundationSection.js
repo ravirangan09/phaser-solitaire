@@ -50,12 +50,4 @@ export default class FoundationSection extends Section {
     return sections.column.hasMatch(card, true);
   }
 
-  doClick(card, sections) {
-    const { targetSection=null, targetColumn=0 } = this.canMove(card, sections)
-    if(targetSection) {
-      this.remove(card.column);
-      targetSection.add(card, targetColumn, true)
-    }
-  }
-
 }
