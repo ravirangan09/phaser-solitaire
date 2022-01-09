@@ -199,8 +199,7 @@ export default class SolitaireGame extends Scene
     y += BUTTON_HEIGHT + GUTTER
     const newButton = new Button(this, x, y, BUTTON_WIDTH, BUTTON_HEIGHT, "New", "new", { labelColor: "green" })
     this.sections = { draw: ds, foundation: fs, play: ps, column: cs };
-    this.renderCards();
-
+    await this.renderCards();
   }
 
   init() {
