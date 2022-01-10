@@ -16,8 +16,8 @@ export default class Card {
     // eslint-disable-next-line no-prototype-builtins
     this.value = lookup.hasOwnProperty(numStr) ? lookup[numStr] : parseInt(numStr);
     this.image = this.scene.add.image(0, 0, 'BACK').setScale(CARD_SCALE)
-                          .setVisible(false).setInteractive();
-    this.image.setData('card', this);
+                          .setVisible(false).setInteractive()
+                          .setData('action', { 'name': 'move', 'card': this })
     this.open = false;
     this.openTextureKey = this.key; 
     this.closeTextureKey = 'BACK';

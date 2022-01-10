@@ -50,6 +50,8 @@ export default class SolitaireGame extends Scene
 
   async doAction(action) {
     switch(action.name) {
+    case "move":
+      return await action.card.section.doClick(action.card, this.sections);
     case "reset":
         return await action.section.doAction(action.name, this.sections);
     case "undo":
@@ -68,8 +70,6 @@ export default class SolitaireGame extends Scene
     if(this.running) return false; 
     try {
       this.running = true;
-      const card = gameObject.getData('card');
-      if(card) return await card.section.doClick(card, this.sections);
       const action = gameObject.getData('action');
       if(action) return await this.doAction(action);
     }
@@ -90,33 +90,61 @@ export default class SolitaireGame extends Scene
     })
     this.input.dragDistanceThreshold = 5;
     this.input.on('dragstart', (pointer, gameObject)=>{
-      this.children.bringToTop(gameObject);
-      gameObject.setData("isDragging", true)
+      const { card=null } = gameObject.getData('action');
+      if(card && card.section.canDrag(card)) {
+        this.children.bringToTop(gameObject);
+        gameObject.setData("isDragging", true)
+      }
+      this.dragMode = true;
     })
 
     this.input.on('drag', (pointer, gameObject, dragX, dragY)=>{
-      gameObject.x = dragX;
-      gameObject.y = dragY;
+      const isDragging = gameObject.getData("isDragging")
+      if(isDragging) {
+        gameObject.x = dragX;
+        gameObject.y = dragY;
+      }
     })
 
 
     this.input.on('dragend', (pointer, gameObject, dropped) => {
       if (!dropped) {
-        const card = gameObject.getData('card');
-        card.moveTo(gameObject.input.dragStartX, gameObject.input.dragStartY, card.open)
+        const isDragging = gameObject.getData("isDragging")
+        if(isDragging) {
+          const{ card } = gameObject.getData('action');
+          card.moveTo(gameObject.input.dragStartX, gameObject.input.dragStartY, card.open)
+        }
       }
     });
 
     this.input.on('gameobjectup', (pointer, gameObject) => {
       const isDragging = gameObject.getData("isDragging")
-      if(!isDragging) {
+      if(!isDragging && !this.dragMode) {
         this.doClick(gameObject);
       }
       gameObject.setData("isDragging", false)
+      this.dragMode = false;
     });
+
+    this.input.on('drop', (pointer, gameObject, dropZone) => {
+      const isDragging = gameObject.getData("isDragging")
+      if(isDragging) {
+        const { card } = gameObject.getData('action');
+        if(card.section.canDrop(card, dropZone)) {
+          //tbd
+          this.doClick(gameObject)
+        } 
+        else {
+          card.moveTo(gameObject.input.dragStartX, gameObject.input.dragStartY, card.open)
+        }       
+      }
+    });
+
+
 
     this.input.on('gameobjectdown', (pointer, gameObject) => {
       gameObject.setData("isDragging", false)
+      this.dragMode = false;
     });
 
     //shutdown needed as scene.restart refreshes object and 
@@ -128,6 +156,7 @@ export default class SolitaireGame extends Scene
       this.input.off("drag");
       this.input.off("dragstart");
       this.input.off("dragend");
+      this.input.off("drop");
       this.input.off("gameobjectup");
       this.input.off("gameobjectdown");
     });
@@ -206,6 +235,7 @@ export default class SolitaireGame extends Scene
     this.moves = [];
     this.sections = {};
     this.running = false;
+    this.dragMode = false;
   }
   
   async create() {

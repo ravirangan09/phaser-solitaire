@@ -18,6 +18,9 @@ export default class FoundationSection extends Section {
       const columnData = this.data[i];
       columnData.pos = { x, y }
       this.scene.add.rectangle(x, y, cardWidth, cardHeight).setStrokeStyle(1, 0x3D3D3D);
+      columnData.zone = this.scene.add.zone(x, y, cardWidth, cardHeight)
+                                .setRectangleDropZone(cardWidth, cardHeight)
+                                .setData({ section: this, column: i })
       x += (cardWidth + GUTTER);
     }
     return this;
@@ -38,12 +41,16 @@ export default class FoundationSection extends Section {
 
   hasMatch(card) {
     for(let i=0;i<4;i++) {
-      if(this.data[i].ruleValue == card.value && 
-          this.data[i].ruleSuites.includes(card.suite)) {
+      if(this.hasMatchColumn(card, i)) {
         return { targetSection: this, targetColumn: i, multiple: false };
       }
     }
     return false;
+  }
+
+  hasMatchColumn(card, column) {
+    return this.data[column].ruleValue == card.value && 
+      this.data[column].ruleSuites.includes(card.suite);
   }
 
   canMove(card, sections) {

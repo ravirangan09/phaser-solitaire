@@ -43,12 +43,26 @@ export default class Section {
     return false;
   }
 
+  canDrag(card) {
+    return this.isTopCard(card);
+  }
+
+  canDrop(card, zone) {
+    const [targetSection, targetColumn]  = zone.getData(['section', 'column']);
+    return targetSection.hasMatchColumn(card, targetColumn);
+  }
+
   getPosition(column) {
     return this.data[column].pos;
   }
 
   getTopCard(column) {
     return this.data[column].stack.at(-1);
+  }
+
+  isTopCard(card) {
+    const topCard = this.getTopCard(card.column);
+    return topCard.key == card.key;
   }
 
   async doClick(card, sections) {
