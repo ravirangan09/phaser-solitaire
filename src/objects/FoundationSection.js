@@ -48,11 +48,6 @@ export default class FoundationSection extends Section {
     return false;
   }
 
-  hasMatchColumn(card, column) {
-    return this.data[column].ruleValue == card.value && 
-      this.data[column].ruleSuites.includes(card.suite);
-  }
-
   canMove(card, sections) {
     return sections.column.hasMatch(card, true);
   }

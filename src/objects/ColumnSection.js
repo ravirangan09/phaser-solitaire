@@ -19,6 +19,10 @@ export default class ColumnSection extends Section {
       const columnData = this.data[i];
       columnData.pos = { x, y }
       this.scene.add.rectangle(x, y, cardWidth, cardHeight).setStrokeStyle(1, 0x3D3D3D);
+      columnData.zone = this.scene.add.zone(x, y, cardWidth, cardHeight)
+                                .setRectangleDropZone(cardWidth, cardHeight)
+                                .setData({ section: this, column: i })
+
       x += (cardWidth + GUTTER);
     }
     return this;
@@ -44,10 +48,17 @@ export default class ColumnSection extends Section {
     }
   }
 
+  modifyDropZone(column) {
+    const dataColumn = this.data[column];
+    const count = dataColumn.stack.length;
+    let { x, y } = dataColumn.pos;
+    y += count > 1 ? (count-1)*VERT_OFFSET: 0;
+    dataColumn.zone.setPosition(x, y);
+  }
+
   hasMatch(card, isTopCard=true) {
     for(let i=0;i<7;i++) {
-      if(this.data[i].ruleValue == card.value && 
-        this.data[i].ruleSuites.includes(card.suite)) {
+      if(this.hasMatchColumn(card, i)) {
         return { targetSection: this, targetColumn: i, multiple: !isTopCard };
       }
     }

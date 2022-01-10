@@ -21,12 +21,14 @@ export default class Section {
     card.setLocation(this, column);
     this.data[column].stack.push(card);
     this.setRule(column);
+    this.modifyDropZone(column);
   }
 
   remove(column, pos=-1) {
     if(!this.data[column].stack.length) return false;
     const [card] = this.data[column].stack.splice(pos, 1);
     this.setRule(column);
+    this.modifyDropZone(column);
     return card;
   }
 
@@ -40,6 +42,10 @@ export default class Section {
   }
 
   canMove() {
+    return false;
+  }
+
+  modifyDropZone() {
     return false;
   }
 
@@ -63,6 +69,11 @@ export default class Section {
   isTopCard(card) {
     const topCard = this.getTopCard(card.column);
     return topCard.key == card.key;
+  }
+
+  hasMatchColumn(card, column) {
+    return this.data[column].ruleValue == card.value && 
+      this.data[column].ruleSuites.includes(card.suite);
   }
 
   async doClick(card, sections) {
