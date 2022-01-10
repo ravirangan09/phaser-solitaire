@@ -15,10 +15,9 @@ Uses `parcel` builder
 
 ## Features
 * Unlimited undo
-* new game
+* New game
+* Drag and drop
 * Page refresh starts same game from beginning
 
-## Pending
-* Drag and drop. Currently click works
 
 
