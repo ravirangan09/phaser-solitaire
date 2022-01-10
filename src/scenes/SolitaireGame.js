@@ -1,13 +1,13 @@
 
 import { Scene, Math} from 'phaser';
-import cardImages from './assets/*.svg';
-import Button from './Button';
-import Card from './Card';
-import ColumnSection from './ColumnSection';
-import DrawSection from './DrawSection';
-import FoundationSection from './FoundationSection';
-import PlaySection from './PlaySection';
-import { GUTTER } from './Section';
+import cardImages from '../assets/*.svg';
+import Button from '../objects/Button';
+import Card from '../objects/Card';
+import ColumnSection from '../objects/ColumnSection';
+import DrawSection from '../objects/DrawSection';
+import FoundationSection from '../objects/FoundationSection';
+import PlaySection from '../objects/PlaySection';
+import { GUTTER } from '../objects/Section';
 
 const DRAW_COUNT = 3;
 const BUTTON_WIDTH = 80;
